@@ -22,15 +22,20 @@ table.table
   tbody
       each reminder in reminders  
             tr
-                  th(scope='row') row.id
-                  td=reminder.UserId
+                  th(scope='row')=reminder.Index+1
+                  td=reminder.UserName
                   td=reminder.Description
                   td=reminder.Amount
-                  td=reminder.PhoneReminder
-                  td=reminder.EmailReminder
-                  td=reminder.SlackReminder
+                  td=reminder.PhoneReminder?'Yes':'No'
+                  td=reminder.EmailReminder?'Yes':'No'
+                  td=reminder.SlackReminder?'Yes':'No'
                   td=reminder.NotedDate
-                  td=reminder.IsDone
+                  //- td=reminder.IsDone
+                  td
+                        if reminder.IsDone
+                              button.btn.btn-light(type='button' disabled) Completed
+                        else
+                              button.btn.btn-success(type='button' onclick="window.location.href = '/management/" + reminder.Id + "';") Mark as done
       
 
 
