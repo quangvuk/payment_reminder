@@ -5,7 +5,8 @@ head
     link(rel='stylesheet' href='./css/style.css')
 
 h1 Assign Page
-a(href='management') Go to Management Page
+a.link-custom(href='management') Go to Management Page
+a.link-custom(href='user/create') Create new user
 form(action='/' method='POST')
     .form-group
         label(for='user') Name
@@ -24,15 +25,6 @@ form(action='/' method='POST')
     .form-group
         label(for='interval') Interval
         input#interval.form-control(type='number' name='interval')
-    //- .form-check.form-check-inline
-    //-     input#email.form-check-input(type='checkbox' name='email' value='email')
-    //-     label.form-check-label(for='email') Email Reminder
-    //- .form-check.form-check-inline
-    //-     input#phone.form-check-input(type='checkbox' name='phone' value='email')
-    //-     label.form-check-label(for='phone') Phone Reminder
-    //- .form-check.form-check-inline
-    //-     input#slack.form-check-input(type='checkbox' name='slack' value='slack')
-    //-     label.form-check-label(for='slack') Slack Reminder
     .form-group
         label(for='email') Email Reminder
         select#email.form-control(name='email')

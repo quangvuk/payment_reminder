@@ -1,14 +1,37 @@
+doctype html
 head
-      link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    title Bill Payment Reminder
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='./css/style.css')
 
 h1 Managment Page
 a(href='/') Back to Home Page
-//- ul
-//-     each user in users
-//-         li=user.Name
-//-         li=user.Email
-//-         li=user.SlackID
-//-         li=user.Phone
+
+table.table
+  thead
+    tr
+      th(scope='col') #
+      th(scope='col') User
+      th(scope='col') Description
+      th(scope='col') Amount
+      th(scope='col') Phone reminder
+      th(scope='col') Email reminder
+      th(scope='col') Slack reminder
+      th(scope='col') Noted date
+      th(scope='col') isDone 
+  tbody
+      each reminder in reminders  
+            tr
+                  th(scope='row') row.id
+                  td=reminder.UserId
+                  td=reminder.Description
+                  td=reminder.Amount
+                  td=reminder.PhoneReminder
+                  td=reminder.EmailReminder
+                  td=reminder.SlackReminder
+                  td=reminder.NotedDate
+                  td=reminder.IsDone
+      
 
 
 

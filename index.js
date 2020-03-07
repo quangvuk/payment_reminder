@@ -87,24 +87,28 @@ app.get('/', (req, res) => {
 });
 
 app.get('/management', (req, res) => {
-    let users = [];
-    db.collection('users').get()
+    let reminders = [];
+    db.collection('reminder_list').get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
-                users.push(doc.data());
+                reminders.push(doc.data());
                 
             });
-            console.log(users);
-            res.render('management_page',{users});
+            console.log(reminders);
+            res.render('management_page',{reminders});
         })
         .catch((err) => {
             console.log('Error getting documents', err);
         }); 
 })
 
+
+app.get('/user/create', (req, res) => {
+    res.render('create_user');
+});
+
 app.post('/', (req, res) => {
     console.log(req.body);
-    
     let reminder = db.collection('reminder_list').doc();
 
     let setReminder = reminder.set({
@@ -122,6 +126,23 @@ app.post('/', (req, res) => {
     });
     console.log(req.body);
     res.redirect('/');
+});
+
+app.post('/user/create', (req, res) => {
+    let users = db.collection('users').doc();
+
+    let newUser = users.set({
+        'Name': req.body.name,
+        'Email': req.body.email,
+        'Phone': req.body.phone,
+        'SlackId': req.body.slackId
+    });
+
+    newUser.then( val => {
+        console.log("Create new user successfully!");
+    }).catch( err => {
+        console.log("Failed to create new user")
+    });
 });
 
 app.listen(port, () => console.log(`Running on port ${port}`));
