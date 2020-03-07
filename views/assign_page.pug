@@ -1,0 +1,52 @@
+doctype html
+head
+    title Bill Payment Reminder
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='./css/style.css')
+
+h1 Assign Page
+a(href='management') Go to Management Page
+form(action='/' method='POST')
+    .form-group
+        label(for='user') Name
+        select#user.form-control(name='user')
+            each user in users
+                option(value=user.id)=user.data.Name
+    .form-group
+        label(for='date') Payment date
+        input#date.form-control(type='datetime-local' name='date')
+    .form-group
+        label(for='amount') Amount
+        input#amount.form-control(type='number' name='amount' placeholder='Vietnam Dong')
+    .form-group
+        label(for='description') Description
+        input#description.form-control(type='text' name='description')
+    .form-group
+        label(for='interval') Interval
+        input#interval.form-control(type='number' name='interval')
+    //- .form-check.form-check-inline
+    //-     input#email.form-check-input(type='checkbox' name='email' value='email')
+    //-     label.form-check-label(for='email') Email Reminder
+    //- .form-check.form-check-inline
+    //-     input#phone.form-check-input(type='checkbox' name='phone' value='email')
+    //-     label.form-check-label(for='phone') Phone Reminder
+    //- .form-check.form-check-inline
+    //-     input#slack.form-check-input(type='checkbox' name='slack' value='slack')
+    //-     label.form-check-label(for='slack') Slack Reminder
+    .form-group
+        label(for='email') Email Reminder
+        select#email.form-control(name='email')
+            option(value='true') Yes
+            option(value='false') No
+    .form-group
+        label(for='phone') Email Reminder
+        select#phone.form-control(name='phone')
+            option(value='true') Yes
+            option(value='false') No
+    .form-group
+        label(for='slack') Email Reminder
+        select#slack.form-control(name='slack')
+            option(value='true') Yes
+            option(value='false') No
+    .form-group
+        button.btn.btn-primary(type='submit') Assign
