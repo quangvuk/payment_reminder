@@ -23,6 +23,7 @@ table.table
       th(scope='col') Email reminder
       th(scope='col') Slack reminder
       th(scope='col') Noted date
+      th(scope='col') Count
       th(scope='col') isDone 
   tbody
       each reminder in reminders  
@@ -35,7 +36,7 @@ table.table
                   td=reminder.EmailReminder?'Yes':'No'
                   td=reminder.SlackReminder?'Yes':'No'
                   td=reminder.NotedDate
-                  //- td=reminder.IsDone
+                  td=reminder.Count
                   td
                         if reminder.IsDone
                               button.btn.btn-light(type='button' disabled) Completed

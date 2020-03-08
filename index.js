@@ -12,7 +12,7 @@ sgMail.setApiKey(key.SENDGRID_API_KEY);
 const cron = require('node-cron');
 var task = cron.schedule('* * * * *', () => {
     console.log('running a task sending email every minute');
-    //reminderSystem();
+    reminderSystem();
 });
 
 // Body Parser
@@ -68,6 +68,13 @@ function logActivity(info) {
    
 }
 
+function checkInterval(info){
+    let millis = 3600000;
+    if (admin.firestore.Timestamp.now().toMillis() - info.LastReminder.toMillis() >= info.Interval*millis)
+        return true;
+    return false;
+}
+
 
 function reminderSystem() {
     db.collection('reminder_list').get()
@@ -76,8 +83,13 @@ function reminderSystem() {
                 if (!doc.data().IsDone) {
                     let data = doc.data();
                     data.Id = doc.id;
-                    //sendEmail(data);
-                    logActivity(data);
+                    if (checkInterval(data)) {
+                        //sendEmail(data);
+                        logActivity(data);
+                    }else{
+                        console.log("Please wait....")
+                    }
+                    
                 }
             });
         })
@@ -225,7 +237,7 @@ app.post('/', (req, res) => {
                     'PhoneReminder': req.body.phone === 'true' ? true : false,
                     'SlackReminder': req.body.slack === 'true' ? true : false,
                     'EmailReminder': req.body.email === 'true' ? true : false,
-                    'Interval': req.body.interval,
+                    'Interval': parseInt(req.body.interval),
                     'Description': req.body.description,
                     'Count': 0,
                     'IsDone': false
