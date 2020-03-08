@@ -84,7 +84,7 @@ function reminderSystem() {
                     let data = doc.data();
                     data.Id = doc.id;
                     if (checkInterval(data)) {
-                        //sendEmail(data);
+                        sendEmail(data);
                         logActivity(data);
                     }else{
                         console.log("Please wait....")
