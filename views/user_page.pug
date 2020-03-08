@@ -4,8 +4,14 @@ head
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
     link(rel='stylesheet' href='./css/style.css')
 
-h1 Create new user
-a(href='/') Back to Home Page
+h1 User page
+ul.nav
+    li.nav-item
+        a.nav-link.active(href='/') Assign Page
+    li.nav-item
+        a.nav-link.active(href='/management') Management Page
+    li.nav-item
+        a.nav-link.active(href='/log') Log activity
 form(action='/user/create' method='POST')
     .form-group
         label(for='name') Name
@@ -42,4 +48,4 @@ table.table
                 td=user.SlackId
                 td
                   button.btn.btn-danger(type='button' onclick="window.location.href = '/user/delete/" + user.Id + "';") Delete
-                  button.btn.btn-danger(type='button' onclick="window.location.href = '/user/edit/" + user.Id + "';") Edit
+                  button.btn.btn-success(type='button' onclick="window.location.href = '/user/edit/" + user.Id + "';") Edit

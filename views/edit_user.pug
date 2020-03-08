@@ -5,19 +5,25 @@ head
     link(rel='stylesheet' href='./css/style.css')
 
 h1 Edit user
-a(href='/') Back to Home Page
-form(action='/user/create' method='POST')
+ul.nav
+      li.nav-item
+            a.nav-link.active(href='/user/create') User Page
+    
+form(action='/user/edit' method='POST')
     .form-group
         label(for='name') Name
-        input#name.form-control(type='text' name='name')
+        input#name.form-control(type='text' name='name' value=info.Name)
     .form-group
         label(for='email') Email
-        input#email.form-control(type='text' name='email')
+        input#email.form-control(type='text' name='email' value=info.Email)
     .form-group
         label(for='phone') Phone
-        input#phone.form-control(type='text' name='phone')
+        input#phone.form-control(type='text' name='phone' value=info.Phone)
     .form-group
         label(for='slackId') Slack ID
-        input#slackId.form-control(type='text' name='slackId')   
+        input#slackId.form-control(type='text' name='slackId' value=info.SlackId) 
     .form-group
-        button.btn.btn-primary(type='submit') Create
+        input#id(type='hidden' name='id' value=info.Id)  
+    .form-group
+        button.btn.btn-primary(type='submit') Update
+    

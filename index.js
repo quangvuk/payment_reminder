@@ -12,7 +12,7 @@ sgMail.setApiKey(key.SENDGRID_API_KEY);
 const cron = require('node-cron');
 var task = cron.schedule('* * * * *', () => {
     console.log('running a task sending email every minute');
-    reminderSystem();
+    //reminderSystem();
 });
 
 // Body Parser
@@ -169,7 +169,16 @@ app.get('/user/delete/:userId', (req, res) => {
 });
 
 app.get('/user/edit/:userId', (req, res) => {
-
+    db.collection('users').doc(req.params.userId).get()
+    .then(doc => {
+        if (!doc.exists) {
+            console.log('Not found!');
+        } else {
+            let info = doc.data();
+            info.Id = doc.id;
+           res.render('edit_user',{info});
+        }
+    })
 });
 
 app.get('/log', (req, res) => {
@@ -246,4 +255,16 @@ app.post('/user/create', (req, res) => {
     });
 });
 
+app.post('/user/edit', (req, res) => {
+    db.collection('users').doc(req.body.id).update({
+        'Name': req.body.name,
+        'Email': req.body.email,
+        'Phone': req.body.phone,
+        'SlackId': req.body.slackId
+    }).then(val => {
+        res.redirect('/user/create');
+    }).catch(err => {
+        console.log(err);
+    })
+})
 app.listen(port, () => console.log(`Running on port ${port}`));
