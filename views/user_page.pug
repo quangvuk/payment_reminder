@@ -1,0 +1,45 @@
+doctype html
+head
+    title Bill Payment Reminder
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='./css/style.css')
+
+h1 Create new user
+a(href='/') Back to Home Page
+form(action='/user/create' method='POST')
+    .form-group
+        label(for='name') Name
+        input#name.form-control(type='text' name='name')
+    .form-group
+        label(for='email') Email
+        input#email.form-control(type='text' name='email')
+    .form-group
+        label(for='phone') Phone
+        input#phone.form-control(type='text' name='phone')
+    .form-group
+        label(for='slackId') Slack ID
+        input#slackId.form-control(type='text' name='slackId')   
+    .form-group
+        button.btn.btn-primary(type='submit') Create
+
+h2 User list
+table.table
+  thead
+    tr
+      th(scope='col') #
+      th(scope='col') User
+      th(scope='col') Email
+      th(scope='col') Phone
+      th(scope='col') Slack
+      th(scope='col') 
+  tbody
+      each user in users  
+            tr
+                th(scope='row')=user.Index+1
+                td=user.Name
+                td=user.Email
+                td=user.Phone
+                td=user.SlackId
+                td
+                  button.btn.btn-danger(type='button' onclick="window.location.href = '/user/delete/" + user.Id + "';") Delete
+                  button.btn.btn-danger(type='button' onclick="window.location.href = '/user/edit/" + user.Id + "';") Edit

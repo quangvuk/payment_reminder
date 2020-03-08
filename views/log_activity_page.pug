@@ -1,0 +1,29 @@
+doctype html
+head
+    title Bill Payment Reminder
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='./css/style.css')
+
+h1 Log Activity
+ul.nav
+      li.nav-item
+            a.nav-link.active(href='/') Back to Home Page
+
+table.table
+  thead
+    tr
+      th(scope='col') #
+      th(scope='col') ReminderID
+      th(scope='col') Timestamp
+      th(scope='col') UserID
+      th(scope='col') UserName
+       
+  tbody
+      each log in logs  
+        tr
+            th(scope='row')=log.Index+1
+            td=log.ReminderId
+            td=log.Timestamp.toDate()
+            td=log.UserId
+            td=log.UserName
+               

@@ -5,8 +5,13 @@ head
     link(rel='stylesheet' href='./css/style.css')
 
 h1 Assign Page
-a.link-custom(href='management') Go to Management Page
-a.link-custom(href='user/create') Create new user
+ul.nav
+    li.nav-item
+        a.nav-link.active(href='management') Go to Management Page
+    li.nav-item
+        a.nav-link.active(href='user/create') User page
+    li.nav-item
+        a.nav-link.active(href='log') Log activity
 form(action='/' method='POST')
     .form-group
         label(for='user') Name

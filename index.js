@@ -12,7 +12,7 @@ sgMail.setApiKey(key.SENDGRID_API_KEY);
 const cron = require('node-cron');
 var task = cron.schedule('* * * * *', () => {
     console.log('running a task sending email every minute');
-    //reminderSystem();
+    reminderSystem();
 });
 
 // Body Parser
@@ -33,13 +33,13 @@ app.set('views', './views');
 
 
 // Sending email
-function sendEmail(amount, notedDate) {
+function sendEmail(info) {
     let msg = {
-        to: 'kvkuypatckrdafbjlk@ttirv.net',
+        to: info.email,
         from: 'quangvuk@outlook.com',
         subject: 'Bill Payment Reminder',
-        text: 'Make payment for your bill please!',
-        html: '<strong>Amount...' + amount + '....Noted Date...' + notedDate + '....</strong>',
+        text: 'Vui long thanh toan!',
+        html: '<strong>Tong cong ' + info.Amount + ' VND, noi dung : "' + info.Description + '" Thoi gian: ' + info.NotedDate + '</strong>',
     };
     sgMail.send(msg).then(val => {
         console.log('sent successfully');
@@ -49,13 +49,35 @@ function sendEmail(amount, notedDate) {
     return msg;
 }
 
+function logActivity(info) {
+    let log = db.collection('log_db').doc().set({
+        'ReminderId': info.Id,
+        'UserId': info.UserId,
+        'UserName': info.UserName,
+        'Timestamp': admin.firestore.FieldValue.serverTimestamp()
+    }).then(val => { 
+        console.log('Logged....!');
+    }).catch(err => {
+        console.log();
+    });
+
+    let reminder = db.collection('reminder_list').doc(info.Id).update({
+        Count: ++info.Count,
+        LastReminder: admin.firestore.FieldValue.serverTimestamp()
+    });
+   
+}
+
+
 function reminderSystem() {
     db.collection('reminder_list').get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
                 if (!doc.data().IsDone) {
                     let data = doc.data();
-                    sendEmail(data.Amount, data.NotedDate);
+                    data.Id = doc.id;
+                    //sendEmail(data);
+                    logActivity(data);
                 }
             });
         })
@@ -76,9 +98,7 @@ app.get('/', (req, res) => {
                     data: doc.data()
                 }
                 users.push(user);
-                //console.log(doc.id, '=>', doc.data());
             });
-            console.log(users);
             res.render('assign_page', { users });
         })
         .catch((err) => {
@@ -95,17 +115,10 @@ app.get('/management', (req, res) => {
                 let tempData = doc.data();
                 tempData.Index = index++;
                 tempData.Id = doc.id;
-                // let user = db.collection('users').doc(tempData.UserId);
-                // let getUser = user.get().then(val => {
-                //     tempData.UserName = val;
-                // }).catch(err => {
-                //     tempData.UserName = 'Not found';
-                //     console.log('Failed to find user!');
-                // })
                 reminders.push(tempData);
 
             });
-            console.log(reminders);
+            //console.log(reminders);
             res.render('management_page', { reminders });
         })
         .catch((err) => {
@@ -126,7 +139,54 @@ app.get('/management/:reminderId', (req, res) => {
 
 
 app.get('/user/create', (req, res) => {
-    res.render('create_user');
+    let users = [];
+    db.collection('users').get().then((snapshot) => {
+        let index = 0;
+        snapshot.forEach((doc)=>{
+            let oneUser = doc.data();
+            oneUser.Index = index++;
+            oneUser.Id = doc.id;
+            users.push(oneUser);
+        });
+    
+        res.render('user_page',{users});
+
+    }).catch(err => {
+        res.redirect('/');
+    });
+});
+
+app.get('/user/delete/:userId', (req, res) => {
+    let userId = req.params.userId;
+    let deleteUser = db.collection('users').doc(userId).delete();
+    deleteUser.then(val => {
+        console.log('Delete sucessfully => ' + userId);
+        res.redirect('/user/create');
+    }).catch(err => {
+        console.log(err);
+        res.redirect('/user/create');
+    });
+});
+
+app.get('/user/edit/:userId', (req, res) => {
+
+});
+
+app.get('/log', (req, res) => {
+    let logs = [];
+    db.collection('log_db').get().then(snapshot => {
+        
+        let index = 0;
+        snapshot.forEach(doc => {
+            let data = doc.data();
+            data.Id = doc.id;
+            data.Index = index++;
+            logs.push(data);
+        });
+        res.render('log_activity_page',{logs});
+    }).catch(err => {
+        console.log(err);
+    });
 });
 
 app.post('/', (req, res) => {
@@ -134,24 +194,31 @@ app.post('/', (req, res) => {
     db.collection("users").doc(req.body.user)
         .get()
         .then(function (doc) {
-            let name = '';
+            let info = {};
             if (doc.exists) {
-                name = doc.data().Name;
+                info.name = doc.data().Name;
+                info.email = doc.data().Email;
+                info.phone = doc.data().Phone;
+                info.slackId = doc.data().SlackId;
             } 
 
             let reminder = db.collection('reminder_list').doc();
                 let setReminder = reminder.set({
                     'Amount': req.body.amount,
-                    'Created': Date(Date.now()),
-                    'LastReminder': Date(Date.now()),
+                    'Created': admin.firestore.FieldValue.serverTimestamp(),
+                    'LastReminder': admin.firestore.FieldValue.serverTimestamp(),
                     'NotedDate': req.body.date,
                     'UserId': req.body.user,
-                    'UserName': name,
+                    'UserName': info.name,
+                    'Email': info.email,
+                    'Phone': info.phone,
+                    'SlackId': info.slackId,
                     'PhoneReminder': req.body.phone === 'true' ? true : false,
                     'SlackReminder': req.body.slack === 'true' ? true : false,
                     'EmailReminder': req.body.email === 'true' ? true : false,
                     'Interval': req.body.interval,
                     'Description': req.body.description,
+                    'Count': 0,
                     'IsDone': false
                 });
         }).catch(function (error) {
